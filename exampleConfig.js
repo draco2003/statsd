@@ -27,6 +27,9 @@ Optional Variables:
   debugInterval:    interval to print debug information [ms, default: 10000]
   dumpMessages:     log all incoming messages
   flushInterval:    interval (in ms) to flush to Graphite
+  purge:            enable purging of counters and timers [object, default: undefined]
+  purgeInterval:    interval (in ms) to purge counters and timers from StatsD memory
+
   percentThreshold: for time information, calculate the Nth percentile(s)
                     (can be a single value or list of floating-point values)
                     [%, default: 90]

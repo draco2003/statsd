@@ -39,6 +39,14 @@ function loadBackend(config, name) {
   }
 };
 
+// Purge metrics from memory.
+function purgeMetrics() {
+    timers = {};
+    counters = {};
+    counter_rates = {};
+    timer_data = {};
+};
+
 // Flush metrics to each backend.
 function flushMetrics() {
   var time_stamp = Math.round(new Date().getTime() / 1000);
@@ -267,6 +275,12 @@ config.configFile(process.argv[2], function (config, oldConfig) {
             stream.write("END\n\n");
             break;
 
+          case "purge":
+            purgeMetrics();
+            stream.write("purged metrics\n");
+            stream.write("END\n\n");
+            break;
+
           case "quit":
             stream.end();
             break;
@@ -299,6 +313,15 @@ config.configFile(process.argv[2], function (config, oldConfig) {
     } else {
       // The default backend is graphite
       loadBackend(config, './backends/graphite');
+    }
+
+    if (config.purge) {
+
+      purgeInterval = Number(config.purgeInterval || 86400000);
+      config.purgeInterval = purgeInterval;
+
+      // Setup the flush timer
+      var purgeInt = setInterval(purgeMetrics, purgeInterval);
     }
 
     // Setup the flush timer
